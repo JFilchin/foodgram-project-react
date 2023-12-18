@@ -2,13 +2,14 @@ from django.utils.deconstruct import deconstructible
 from django.forms import ValidationError
 from rest_framework import serializers
 
+
 @deconstructible
 class UsernameValidator:
     '''Проверка имени пользователя.'''
     code = 'username_valid'
 
     def __init__(self, message=None):
-        self.message = message if message else 'Не допускается использовать "me" в качестве имени.'
+        self.message = message if message else 'Не допускается имя "me".'
 
     def __call__(self, value):
         if value.lower() == 'me':

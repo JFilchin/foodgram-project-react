@@ -5,7 +5,8 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from recipes.models import Cart, Ingredient, IngredientsAmount, Recipe, Tag, FavoriteRecipe
+from recipes.models import (
+    Cart, Ingredient, IngredientsAmount, Recipe, Tag, FavoriteRecipe)
 from users.models import Subscription, User
 from .validators import RecipeValidator
 
@@ -27,9 +28,7 @@ class Base64ImageField(serializers.ImageField):
         if isinstance(data, str) and data.startswith('data:image'):
             format, imgstr = data.split(';base64,')
             ext = format.split('/')[-1]
-
             data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-
         return super().to_internal_value(data)
 
 
@@ -108,7 +107,7 @@ class CustomUserSerializer(UserSerializer):
         )
 
     def get_is_subscribed(self, obj):
-        request = self.context.get('request')
+        request = self.context['request']
         if request is None or request.user.is_anonymous:
             return False
         return obj.author.filter(author=request.user).exists()
@@ -117,7 +116,6 @@ class CustomUserSerializer(UserSerializer):
 class ListOfRecipesSerializer(serializers.ModelSerializer):
     '''
     Сериализатор для получения списка рецептов.
-    Доступна фильтрация по избранному, автору, списку покупок и тегам.
     '''
     name = serializers.CharField(source='title')
     text = serializers.CharField(source='description')
@@ -148,7 +146,7 @@ class ListOfRecipesSerializer(serializers.ModelSerializer):
         return IngredientsListSerializer(ingredients, many=True).data
 
     def get_is_favorited(self, obj):
-        '''Показывать только рецепты, находящиеся в списке избранного.'''
+        '''Показывает рецепты в избранном.'''
         request = self.context['request'].user
         if request.is_anonymous:
             return False
@@ -158,8 +156,8 @@ class ListOfRecipesSerializer(serializers.ModelSerializer):
         ).exists()
 
     def get_is_in_shopping_cart(self, obj):
-        '''Показывать только рецепты, находящиеся в списке покупок.'''
-        request = self.context.get('request')
+        '''Показывает рецепты в корзине.'''
+        request = self.context['request']
         if request.user.is_anonymous:
             return False
         return request.user.user_cart.filter(recipe=obj).exists()
@@ -168,7 +166,6 @@ class ListOfRecipesSerializer(serializers.ModelSerializer):
 class CreateUpdateRecipesSerializer(serializers.ModelSerializer):
     '''
     Сериализатор для создания и обновления рецептов.
-    Доступна фильтрация по избранному, автору, списку покупок и тегам.
     '''
     name = serializers.CharField(source='title')
     text = serializers.CharField(source='description')
@@ -269,10 +266,18 @@ class CreateUpdateRecipesSerializer(serializers.ModelSerializer):
             user=current_user,
             recipe=obj.id).exists()
 
+    def get_is_in_shopping_cart(self, obj):
+        current_user = self.context['request'].user
+        if current_user.is_anonymous:
+            return False
+        return Cart.objects.filter(
+            user=current_user,
+            recipe=obj).exists()
+
     def to_representation(self, instance):
         return ListOfRecipesSerializer(
             instance,
-            context={'request': self.context.get('request')}
+            context={'request': self.context['request']}
         ).data
 
 

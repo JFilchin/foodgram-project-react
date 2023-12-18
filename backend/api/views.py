@@ -21,6 +21,7 @@ from .serializers import (
     SubscriptionOfUserSerializer,
     SubscriptionSerializer
 )
+from .utils import download_recipe
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -65,15 +66,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
             if favorite_recipe.exists():
                 return Response(
-                    {'error': 'Вы уже добавили этот рецепт в избранное!'},
+                    {'error': 'Рецепт уже есть в избранном.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             try:
                 recipe = Recipe.objects.get(pk=pk)
             except Recipe.DoesNotExist:
                 return Response(
-                    {'errors': 'Такого рецепта не существует!.'},
-                    status=status.HTTP_400_BAD_REQUEST)
+                    {'errors': 'Рецепт не существует.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             FavoriteRecipe.objects.create(user=user, recipe=recipe)
             serializer = ShortlistRecipesSerializer(recipe)
             return Response(
@@ -85,56 +87,69 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 recipe = Recipe.objects.get(pk=pk)
             except Recipe.DoesNotExist:
                 return Response(
-                    {'errors': 'Такого рецепта не существует!.'},
-                    status=status.HTTP_404_NOT_FOUND)
+                    {'errors': 'Рецепт не существует.'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
             favorite_recipe = FavoriteRecipe.objects.filter(
                 recipe__id=pk, user=user
             )
             if favorite_recipe.exists():
                 favorite_recipe.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
-            return Response({'error': ('Вы еще не добавляли этот рецепт '
-                                       'в избранное!')},
-                            status=status.HTTP_400_BAD_REQUEST
-                            )
+            return Response(
+                {'error': ('Рецепт еще не добавлен в избранное.')},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-    @action(detail=True,
-            methods=('POST', 'DELETE'),
+    @action(detail=True, methods=('POST', 'DELETE'),
             permission_classes=(permissions.IsAuthenticated,))
     def shopping_cart(self, request, pk):
         '''Функция добавления рецепта в список покупок.'''
         if request.method == 'POST':
-            return self.add_cart(Cart, request.user, pk)
+            return self.add_to_cart(Cart, request.user, pk)
         if request.method == 'DELETE':
-            return self.delete_cart(Cart, request.user, pk)
+            return self.delete_from_cart(Cart, request.user, pk)
 
-    def add_cart(self, model, user, pk):
+    def add_to_cart(self, model, user, pk):
         if model.objects.filter(user=user, recipe__id=pk).exists():
             return Response(
-                {'errors': 'Вы уже добавили этот рецепт в список покупок.'},
+                {'errors': 'Рецепт уже в корзине.'},
                 status=status.HTTP_400_BAD_REQUEST)
         try:
             recipe = Recipe.objects.get(pk=pk)
         except Recipe.DoesNotExist:
             return Response(
-                {'errors': 'Такого рецепта не существует!.'},
+                {'errors': 'Рецепт не существует.'},
                 status=status.HTTP_400_BAD_REQUEST)
         model.objects.create(user=user, recipe=recipe)
         serializer = ShortlistRecipesSerializer(recipe)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def delete_cart(self, model, user, pk):
+    def delete_from_cart(self, model, user, pk):
         recipe = get_object_or_404(Recipe, id=pk)
         cart = model.objects.filter(user=user, recipe=recipe)
         if cart.exists():
             cart.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response({'errors': 'Вы уже удалили данный рецепт.'},
+        return Response({'errors': 'Рецепта уже нет в вашей корзине.'},
                         status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=('GET',),
+            permission_classes=(permissions.IsAuthenticated,))
+    def download_shopping_cart(self, request):
+        '''Функция скачивания рецептов из списка покупок.'''
+        user_cart = request.user
+        if not user_cart.user_cart.exists():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        recipes_list = Recipe.objects.filter(
+            recipe_in_cart__user=user_cart
+        )
+        response = download_recipe(recipes_list)
+        return response
 
 
 class UsersViewSet(UserViewSet):
-    '''Вьюсет для авторов.'''
+    '''Вьюсет для пользователей.'''
     queryset = User.objects.all()
     pagination_class = CustomPagination
 
@@ -145,7 +160,6 @@ class UsersViewSet(UserViewSet):
         '''
         Возвращает пользователей, на которых подписан текущий пользователь.
         В выдачу добавляются рецепты.
-        http://localhost/api/users/subscriptions/
         '''
         authors = User.objects.filter(author__user=self.request.user)
         paginator = CustomPagination()
@@ -164,7 +178,6 @@ class UsersViewSet(UserViewSet):
         '''
         Функция позволяет текущему пользователю подписаться
         или отписаться от других пользователей.
-        http://localhost/api/users/{id}/subscribe/
         '''
         author = get_object_or_404(User, id=id)
         subscription = Subscription.objects.filter(
@@ -188,7 +201,9 @@ class UsersViewSet(UserViewSet):
                 author_serializer.data, status=status.HTTP_201_CREATED
             )
         if request.method == 'DELETE' and not subscription.exists():
-            raise exceptions.ValidationError()
+            raise exceptions.ValidationError(
+                'Вы уже подписаны на данного автора.'
+            )
         if request.method == 'DELETE':
             subscription.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)

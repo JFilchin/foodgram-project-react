@@ -1,5 +1,5 @@
 from django_filters.rest_framework import FilterSet, filters
-from recipes.models import Ingredient, Recipe, Tag
+from recipes.models import Ingredient, Recipe
 
 
 class IngredientFilter(FilterSet):
@@ -13,7 +13,10 @@ class IngredientFilter(FilterSet):
 
 
 class RecipeFilter(FilterSet):
-    '''Фильтр рецепта по автору и тегу.'''
+    '''
+    Фильтр рецепта.
+    Доступна фильтрация по избранному, автору, списку покупок и тегам.
+    '''
     tags = filters.AllValuesMultipleFilter(
         field_name='tags__slug'
     )
