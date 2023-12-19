@@ -10,7 +10,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', default='token')
 
 DEBUG = os.getenv('DEBUG', default=False)
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='127.0.0.1, localhost').split(', ')
+ALLOWED_HOSTS = os.getenv(
+    'ALLOWED_HOSTS', default='127.0.0.1, localhost').split(', ')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -60,21 +61,14 @@ WSGI_APPLICATION = 'foodgram_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('POSTGRES_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.getenv('POSTGRES_NAME', 'foodgram'),
+        'USER': os.getenv('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+        'HOST': os.getenv('POSTGRES_HOST', 'db'),
+        'PORT': os.getenv('POSTGRES_PORT', 5432),
     }
 }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': os.getenv('POSTGRES_ENGINE','django.db.backends.sqlite3'),
-#         'NAME': os.getenv('POSTGRES_NAME','foodgram'),
-#         'USER': os.getenv('POSTGRES_USER','postgres'),
-#         'PASSWORD': os.getenv('POSTGRES_PASSWORD','postgres'),
-#         'HOST': os.getenv('POSTGRES_HOST','localhost'),
-#         'PORT': os.getenv('POSTGRES_PORT','5432'),
-#     }
-# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -103,19 +97,19 @@ USE_TZ = True
 
 AUTH_USER_MODEL = 'users.User'
 
-CSV_FILES_DIR = os.path.join(BASE_DIR, 'data')
+CSV_INGREDIENTS_ROOT = os.path.join(BASE_DIR, 'data')
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'collected_static'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny', 
+        'rest_framework.permissions.AllowAny',
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -136,10 +130,8 @@ DJOSER = {
         'user': ['rest_framework.permissions.AllowAny'],
         'user_list': ['rest_framework.permissions.AllowAny'],
     },
-    'HIDE_USERS': True,
+    'HIDE_USERS': False,
 }
 
 PAGE_SIZE = 6
 MAX_PAGE_SIZE = 50
-
-SIZE_OF_SHORTLIST = 4

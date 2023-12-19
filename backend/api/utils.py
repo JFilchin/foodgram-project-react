@@ -9,16 +9,17 @@ from reportlab.pdfbase.ttfonts import TTFont
 from .serializers import IngredientsAmount
 
 
-def download_recipe(list):
-    '''Формирование pdf-списка рецептов из списка покупок.'''
-    registerFont(TTFont('Arial', 'arial.ttf'))
+def download_recipe(values):
+    '''Формирование pdf-списка покупок для скачивания.'''
+    registerFont(TTFont(
+        'Helvetica', 'data/fonts/Helvetica.ttf', 'Helvetica.ttf'))
     buffer = io.BytesIO()
     page = canvas.Canvas(buffer, pagesize=legal, bottomup=0)
     recipe_list = page.beginText()
     recipe_list.setTextOrigin(inch, inch)
-    recipe_list.setFont('Arial', 14)
+    recipe_list.setFont('Helvetica', 14)
     lines = []
-    for recipe in list:
+    for recipe in values:
         lines.append('===================')
         lines.append(recipe.title)
         lines.append('===================')
@@ -30,16 +31,15 @@ def download_recipe(list):
                 'ingredient__measure_unit',
             ).order_by(
                 'ingredient__title'
-            ).annotate(ingredient_value=Sum('amount'))
+            ).annotate(ingredient_amount=Sum('amount'))
         )
         for number, ingredient in enumerate(ingredients_cart, start=1):
             lines.append(
                 f"{number}. {ingredient['ingredient__title']}: "
-                f"{ingredient['ingredient_value']} "
+                f"{ingredient['ingredient_amount']} "
                 f"{ingredient['ingredient__measure_unit']}.",
             )
         lines.append(' ')
-        lines.append(recipe.description)
         lines.append(' ')
 
     for line in lines:

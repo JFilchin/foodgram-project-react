@@ -1,9 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
-
 from .views import IngredientViewSet, RecipeViewSet, TagViewSet, UsersViewSet
 
 
@@ -17,7 +15,7 @@ router.register(r'users', UsersViewSet, basename='users')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('auth/', include('djoser.urls.authtoken')),  # Работа с токенами
+    path('auth/', include('djoser.urls.authtoken')),
 ]
 
 if settings.DEBUG:

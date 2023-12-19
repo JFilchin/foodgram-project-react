@@ -9,10 +9,8 @@ class User(AbstractUser):
     username = models.CharField(
         max_length=150,
         validators=[
-            RegexValidator(
-            regex=r'^[\w.@+-]+\Z',
-            message='Допустимые символы: . + - '
-            ),
+            RegexValidator(regex=r'^[\w.@+-]+\Z',
+                           message='Допустимые символы: . + - '),
             UsernameValidator(),
         ],
         unique=True,

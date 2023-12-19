@@ -130,3 +130,6 @@ dmypy.json
 
 # .idea
 .idea
+
+/dev-infra
+/backend/media

@@ -195,11 +195,11 @@ class CreateUpdateRecipesSerializer(serializers.ModelSerializer):
 
     def validate(self, fields):
         '''Валидация полей рецепта.'''
-        if not 'ingredients' in fields:
+        if 'ingredients' not in fields:
             raise serializers.ValidationError(
                 'Поле ingredients не может быть пустым'
             )
-        if not 'tags' in fields:
+        if 'tags' not in fields:
             raise serializers.ValidationError(
                 'Поле tags не может быть пустым'
             )
@@ -216,14 +216,11 @@ class CreateUpdateRecipesSerializer(serializers.ModelSerializer):
     @staticmethod
     def add_ingredients(recipe, ingredients):
         '''Добавляет ингредиенты.'''
-        IngredientsAmount.objects.bulk_create([
-            IngredientsAmount(
+        for ingredient in ingredients:
+            IngredientsAmount.objects.create(
                 ingredient=ingredient.get('id'),
                 recipe=recipe,
-                amount=ingredient.get('amount')
-            )
-            for ingredient in ingredients
-        ])
+                amount=ingredient.get('amount'))
 
     def create(self, validated_data):
         '''Метод создания рецепта.'''
