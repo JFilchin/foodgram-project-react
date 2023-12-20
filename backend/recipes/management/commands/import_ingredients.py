@@ -22,3 +22,4 @@ class Command(BaseCommand):
                 for row in reader
             ]
             Ingredient.objects.bulk_create(ingredients)
+        print('Импорт завершен.')

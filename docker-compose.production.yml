@@ -12,9 +12,7 @@ services:
     volumes:
       - database-data:/var/lib/postgressql/data
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: jfilchin/foodgram_backend
     env_file: .env
     volumes:
       - static:/app/backend_static
@@ -23,17 +21,13 @@ services:
       - db
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: jfilchin/foodgram_frontend
     volumes:
       - ./frontend/:/app/result_build/
     depends_on:
       - db
   nginx:
-    build: 
-      context: ./nginx/
-      dockerfile: Dockerfile
+    image: jfilchin/foodgram_gateway
     env_file: .env
     ports:
       - "7000:80"
