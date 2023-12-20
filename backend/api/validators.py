@@ -1,5 +1,5 @@
-from django.utils.deconstruct import deconstructible
 from django.forms import ValidationError
+from django.utils.deconstruct import deconstructible
 from rest_framework import serializers
 
 

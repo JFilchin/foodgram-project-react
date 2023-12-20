@@ -1,11 +1,13 @@
 import io
+
 from django.db.models import Sum
 from django.http import FileResponse
-from reportlab.pdfgen import canvas
-from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import legal
+from reportlab.lib.units import inch
 from reportlab.pdfbase.pdfmetrics import registerFont
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
+
 from .serializers import IngredientsAmount
 
 

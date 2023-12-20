@@ -1,7 +1,7 @@
-from django.db import models
+from api.validators import UsernameValidator
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
-from api.validators import UsernameValidator
+from django.db import models
 
 
 class User(AbstractUser):

@@ -1,26 +1,20 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import exceptions, permissions, viewsets, status
+from djoser.views import UserViewSet
+from recipes.models import Cart, FavoriteRecipe, Ingredient, Recipe, Tag
+from rest_framework import exceptions, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from djoser.views import UserViewSet
-
-from recipes.models import Cart, FavoriteRecipe, Ingredient, Recipe, Tag
 from users.models import Subscription, User
 
 from .filters import IngredientFilter, RecipeFilter
-from .permissions import IsAuthorOrReadOnlyPermission
 from .pagination import CustomPagination
-from .serializers import (
-    CustomUserSerializer,
-    CreateUpdateRecipesSerializer,
-    IngredientSerializer,
-    ListOfRecipesSerializer,
-    TagSerializer,
-    ShortlistRecipesSerializer,
-    SubscriptionOfUserSerializer,
-    SubscriptionSerializer
-)
+from .permissions import IsAuthorOrReadOnlyPermission
+from .serializers import (CreateUpdateRecipesSerializer, CustomUserSerializer,
+                          IngredientSerializer, ListOfRecipesSerializer,
+                          ShortlistRecipesSerializer,
+                          SubscriptionOfUserSerializer, SubscriptionSerializer,
+                          TagSerializer)
 from .utils import download_recipe
 
 
