@@ -21,9 +21,95 @@
 - GitHub Actions
 - Linux Ubuntu
 
-## ссылку на доку, 
+## Документация
+Redoc можно посмореть после локального запуска проекта по адресу:
+```
+http://localhost:7000/api/docs/
+```
 
-## ссылку на инструкцию, как разворачивать
+## Инструкция
+Чтобы развернуть локально проект с помощью Docker, необходимо склонировать репозиторий себе на компьютер:
+
+```bash
+git clone <название репозитория>
+```
+
+```bash
+cd <название репозитория> 
+```
+
+Cоздать и активировать виртуальное окружение:
+
+```bash
+python -m venv venv
+source venv/Scripts/activate
+```
+
+Создать файл .env по образцу ".env.example":
+
+```bash
+touch .env
+```
+
+Установить зависимости из файла requirements.txt:
+
+```bash
+cd ../backend
+pip install -r requirements.txt
+```
+
+В папках frontend/, backend/ и  nginx/ соберите образы foodgram_frontend, foodgram_backend и foodgram_gateway.
+
+В директории frontend:
+
+```bash
+cd frontend  
+docker build -t jfilchin/foodgram_frontend .
+```
+
+То же в директории backend:
+
+```bash
+cd ../backend  
+docker build -t jfilchin/foodgram_backend .
+```
+
+И то же и в nginx:
+
+```bash
+cd ../nginx    
+docker build -t jfilchin/foodgram_gateway .
+```
+
+Запустите Docker Compose на своём компьютере. 
+
+Для сборки название файла конфигурации надо указывать явным образом. Имя файла указывается после ключа -f.
+
+```bash
+docker compose -f docker-compose.production.yml up
+```
+Собрать статику:
+```bash
+docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
+docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /app/backend_static/static/
+```
+Выполнить миграции:
+```bash
+docker compose -f docker-compose.production.yml exec backend python manage.py makemigrations
+docker compose -f docker-compose.production.yml exec backend python manage.py migrate
+```
+Импортировать данные (теги и ингредиенты):
+```bash
+docker compose -f docker-compose.production.yml exec backend python manage.py import_data
+```
+Создать супер пользователя:
+```bash
+docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser
+```
+Перейти по ссылке:
+```
+http://localhost/recipes
+```
 
 ## Автор
 [JFilchin](https://github.com/JFilchin)

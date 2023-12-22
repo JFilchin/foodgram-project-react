@@ -41,5 +41,5 @@ services:
       - static:/app/backend_static
       - media:/app/media
     depends_on:
-      - frontend     
+      - frontend
       - backend
