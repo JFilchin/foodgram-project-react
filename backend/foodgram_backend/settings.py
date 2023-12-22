@@ -21,10 +21,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
+    'django_filters',
     'users.apps.UsersConfig',
     'recipes.apps.RecipesConfig',
     'api.apps.ApiConfig',
@@ -66,7 +66,7 @@ DATABASES = {
         'NAME': os.getenv('POSTGRES_NAME', 'foodgram'),
         'USER': os.getenv('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
-        'HOST': os.getenv('POSTGRES_HOST', 'db'),
+        'HOST': os.getenv('POSTGRES_HOST', ''),
         'PORT': os.getenv('POSTGRES_PORT', 5432),
     }
 }
@@ -98,7 +98,7 @@ USE_TZ = True
 
 AUTH_USER_MODEL = 'users.User'
 
-CSV_INGREDIENTS_ROOT = os.path.join(BASE_DIR, 'data')
+CSV_DATA_ROOT = os.path.join(BASE_DIR, 'data')
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'collected_static'
@@ -136,3 +136,6 @@ DJOSER = {
 
 PAGE_SIZE = 6
 MAX_PAGE_SIZE = 50
+RECIPE_NAME_MAX_LEN = 200
+INGREDIENTS_MIN_AMOUNT = 1
+COOKING_TIME_MIN = 1

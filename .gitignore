@@ -131,5 +131,5 @@ dmypy.json
 # .idea
 .idea
 
-/dev-infra
-/backend/media
+/nginx_test
+docker-compose.test.yml

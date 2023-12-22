@@ -1,6 +1,7 @@
 from django.forms import ValidationError
 from django.utils.deconstruct import deconstructible
 from rest_framework import serializers
+from django.conf import settings
 
 
 @deconstructible
@@ -21,7 +22,7 @@ class RecipeValidator:
 
     def validate_name(name):
         '''Проверяет кол-во символов поля name.'''
-        if len(name) > 200:
+        if len(name) > settings.RECIPE_NAME_MAX_LEN:
             raise serializers.ValidationError(
                 'Длина поля `name` превышает 200 символов')
         return name
@@ -31,7 +32,7 @@ class RecipeValidator:
         if not ingredients:
             raise serializers.ValidationError('Поле не может быть пустым')
         for ingredient in ingredients:
-            if int(ingredient.get('amount')) < 1:
+            if int(ingredient.get('amount')) < settings.INGREDIENTS_MIN_AMOUNT:
                 raise serializers.ValidationError(
                     'Количество ингредиента не может быть меньше 1'
                 )
@@ -54,7 +55,7 @@ class RecipeValidator:
         '''Проверяет поля cooking_time: наличие и кол-во.'''
         if not cooking_time:
             raise serializers.ValidationError('Поле не может быть пустым')
-        if int(cooking_time) < 1:
+        if int(cooking_time) < settings.COOKING_TIME_MIN:
             raise serializers.ValidationError(
                 'Время приготовления не может быть меньше 1'
             )

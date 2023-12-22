@@ -20,3 +20,10 @@
 - Docker-compose
 - GitHub Actions
 - Linux Ubuntu
+
+## ссылку на доку, 
+
+## ссылку на инструкцию, как разворачивать
+
+## Автор
+[JFilchin](https://github.com/JFilchin)

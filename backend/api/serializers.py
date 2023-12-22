@@ -3,10 +3,11 @@ import base64
 import webcolors
 from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer, UserSerializer
-from recipes.models import (Cart, FavoriteRecipe, Ingredient,
-                            IngredientsAmount, Recipe, Tag)
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
+
+from recipes.models import (Cart, FavoriteRecipe, Ingredient,
+                            IngredientsAmount, Recipe, Tag)
 from users.models import Subscription, User
 
 from .validators import RecipeValidator

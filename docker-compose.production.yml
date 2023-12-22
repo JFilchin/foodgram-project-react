@@ -4,19 +4,22 @@ volumes:
   database-data:
   static:
   media:
+  redoc:
 
 services:
   db:
-    image: postgres:13.10
+    image: postgres:13
     env_file: .env
     volumes:
       - database-data:/var/lib/postgressql/data
+
   backend:
     image: jfilchin/foodgram_backend
     env_file: .env
     volumes:
       - static:/app/backend_static
       - media:/app/media
+      - redoc:/app/docs
     depends_on:
       - db
 
@@ -26,6 +29,7 @@ services:
       - ./frontend/:/app/result_build/
     depends_on:
       - db
+
   nginx:
     image: jfilchin/foodgram_gateway
     env_file: .env

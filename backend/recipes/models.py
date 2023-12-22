@@ -1,5 +1,7 @@
 from django.core.validators import RegexValidator
 from django.db import models
+from colorfield.fields import ColorField
+
 from users.models import User
 
 
@@ -58,7 +60,7 @@ class Tag(models.Model):
         unique=True,
         verbose_name='Название тэга'
     )
-    color = models.CharField(
+    color = ColorField(
         max_length=7,
         verbose_name='Цветовой код в формате #49B64E'
     )
