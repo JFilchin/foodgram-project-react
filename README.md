@@ -58,6 +58,8 @@ cd ../backend
 pip install -r requirements.txt
 ```
 
+Запустите Docker Compose на своём компьютере. 
+
 В папках frontend/, backend/ и  nginx/ соберите образы foodgram_frontend, foodgram_backend и foodgram_gateway.
 
 В директории frontend:
@@ -80,8 +82,6 @@ docker build -t jfilchin/foodgram_backend .
 cd ../nginx    
 docker build -t jfilchin/foodgram_gateway .
 ```
-
-Запустите Docker Compose на своём компьютере. 
 
 Для сборки название файла конфигурации надо указывать явным образом. Имя файла указывается после ключа -f.
 
@@ -108,7 +108,7 @@ docker compose -f docker-compose.production.yml exec backend python manage.py cr
 ```
 Перейти по ссылке:
 ```
-http://localhost/recipes
+http://localhost:7000/
 ```
 
 ## Автор
