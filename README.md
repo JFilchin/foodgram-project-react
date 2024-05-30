@@ -1,25 +1,19 @@
 # Продуктовый помощник 
-#### Foodgram
-##### bellyfeast.hopto.org
-##### логин evgeniifilchin@gmail.com
-##### пароль Sa12345678
-
-
 
 ## Описание
 Ресурс, на котором пользователи могут публиковать рецепты, добавлять чужие рецепты в избранное и подписываться на публикации других авторов. Пользователям сайта также будет доступен сервис «Список покупок». Он позволит создавать список продуктов, которые нужно купить для приготовления выбранных блюд.
 
 ## Стек технологий
 
-- Python 
-- Django Rest Framework 
-- Nginx
-- Gunicorn
-- PostgreSQL
-- Docker
-- Docker-compose
-- GitHub Actions
-- Linux Ubuntu
+![Python](https://img.shields.io/badge/-Python-black?style=for-the-badge&logo=Python&logoColor=) 
+![Django](https://img.shields.io/badge/-Django-black?style=for-the-badge&logo=Django&logoColor=E9D54D)
+![DjangoRESTFramework](https://img.shields.io/badge/-DRF-black?style=for-the-badge&logo=DjangoRESTFramework)
+![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-black?style=for-the-badge&logo=PostgreSQL&logoColor=white)
+![Gunicorn](https://img.shields.io/badge/gunicorn-black?style=for-the-badge&logo=gunicorn&logoColor=43A047)
+![Nginx](https://img.shields.io/badge/-Nginx-black?style=for-the-badge&logo=Nginx&logoColor=43A047)
+![Docker](https://img.shields.io/badge/-Docker-black?style=for-the-badge&logo=Docker)
+![Ubuntu](https://img.shields.io/badge/-Ubuntu-black?style=for-the-badge&logo=Ubuntu)
+![GitHubActions](https://img.shields.io/badge/-GitHubActions-black?style=for-the-badge&logo=GitHubActions)
 
 ## Документация
 Redoc можно посмореть после локального запуска проекта по адресу:
